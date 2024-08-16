@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom/client';
 import Map from './map';
 import Festival from './festival';
 
-import './main.css'; // Import the CSS file
+import './css/main.css'; // Import the CSS file
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 

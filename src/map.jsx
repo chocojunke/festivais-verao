@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Box, Typography } from '@mui/material';
-import Slider from "react-slick";
-
+import Popup from './Popup.jsx';
 
 function Map() {
     const [latitudeValue, setLatitudeValue] = useState(39.959631);
@@ -11,7 +9,9 @@ function Map() {
     const [festivals, setFestivals] = useState([]);
     const [selectedFestival, setSelectedFestival] = useState(null); // State to track selected festival
 
+    // Update location for map center and load festivals
     useEffect(() => {
+        // Update location
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 setLatitudeValue(position.coords.latitude);
@@ -21,6 +21,7 @@ function Map() {
                 console.log("Error getting location: " + error.message);
             }
         );
+        // Load festivals
         setFestivals(festivalData); // Or load data from DB
     }, []);
 
@@ -28,13 +29,12 @@ function Map() {
         setSelectedFestival(festival);
     };
 
-    var settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-    };
+    function prepareFestival(selectedFestival, shows) {
+        if (selectedFestival) {
+            selectedFestival["shows"] = shows.filter((show) => show.festivalId === selectedFestival.id);
+        }
+        return selectedFestival;
+    }
 
     return (
         <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
@@ -56,7 +56,7 @@ function Map() {
                             lat={festival.location.latitude}
                             lng={festival.location.longitude}
                             style={{ fontSize: 40, cursor: 'pointer' }}
-                            onClick={() => handleIconClick(festival)} // Handle click
+                            onClick={() => { setSelectedFestival(festival) }} // Handle click
                         />
                     ))
                 }
@@ -67,57 +67,7 @@ function Map() {
                     style={{ fontSize: 40 }}
                 />
             </GoogleMapReact>
-
-            {selectedFestival && (
-                <Box
-                    sx={{
-                        position: 'fixed',
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        paddingBottom: 'env(safe-area-inset-bottom)',  // Adjust for browser bottom bar
-                        backgroundColor: 'white',
-                        zIndex: 1000,  // Ensure it's on top of other elements
-                    }}
-                >
-                    <Typography variant="h6" component="div">
-                        {selectedFestival.name}
-                    </Typography>
-                    <Typography variant="body1">
-                        Location: {selectedFestival.location.latitude}, {selectedFestival.location.longitude}
-                    </Typography>
-                    <Typography variant="body2">
-                        Dates: {selectedFestival.date.start.toLocaleDateString()} - {selectedFestival.date.end.toLocaleDateString()}
-                    </Typography>
-                    {selectedFestival.price ? (
-                        <Typography variant="body2">Price: {selectedFestival.price}</Typography>
-                    ) : (
-                        <Typography variant="body2">Price: Free</Typography>
-                    )}
-                    <Slider {...settings}>
-                        {
-                            showsData.filter((show) => show.festivalId === selectedFestival.id).map((show) => (
-                                <div>
-                                    <div style={{ margin: '5%' }}>
-                                        <h2>{show.name}</h2>
-                                        {show.price ? (
-                                            <Typography variant="body2">Price: {selectedFestival.price}</Typography>
-                                        ) : (
-                                            <Typography variant="body2">Price: Free</Typography>
-                                        )}
-                                        <img
-                                            key={show.id}
-                                            src={show.image}
-                                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                                        />
-                                    </div>
-                                </div>
-
-                            ))
-                        }
-                    </Slider>
-                </Box>
-            )}
+            <Popup selectedFestival={prepareFestival(selectedFestival, showsData)}></Popup>
         </div>
     );
 }
