@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import Popup from './Popup.jsx';
+import QuickFilters from './QuickFilters';
+import FixedBox from './FixedBox.jsx';
 
 function Map() {
     const [latitudeValue, setLatitudeValue] = useState(39.959631);
@@ -25,10 +26,6 @@ function Map() {
         setFestivals(festivalData); // Or load data from DB
     }, []);
 
-    const handleIconClick = (festival) => {
-        setSelectedFestival(festival);
-    };
-
     function prepareFestival(selectedFestival, shows) {
         if (selectedFestival) {
             selectedFestival["shows"] = shows.filter((show) => show.festivalId === selectedFestival.id);
@@ -38,6 +35,7 @@ function Map() {
 
     return (
         <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
+            <QuickFilters></QuickFilters>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: "AIzaSyDtnrr2L--poxlVf-5LBgaIFzo2TYjt5GE" }}
                 options={{ gestureHandling: 'greedy' }}
@@ -67,7 +65,7 @@ function Map() {
                     style={{ fontSize: 40 }}
                 />
             </GoogleMapReact>
-            <Popup selectedFestival={prepareFestival(selectedFestival, showsData)}></Popup>
+            <FixedBox selectedFestival={prepareFestival(selectedFestival, showsData)}/>
         </div>
     );
 }

@@ -1,0 +1,33 @@
+.quick-filters {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-around;
+    background-color: #fff; /* Adjust background color as needed */
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+    z-index: 1000; /* Ensure it stays above other content */
+  }
+  
+  .filter-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .filter-btn:hover {
+    background-color: #f0f0f0; /* Change to desired hover color */
+  }
+  
+  @media (max-width: 600px) {
+    .filter-btn {
+      font-size: 14px;
+      padding: 8px;
+    }
+  }
+  
